@@ -1,0 +1,22 @@
+<template>
+    <lightning-card title="Order Management">
+        <div class="slds-m-around_medium">
+            <lightning-input type="search" label="Search Products" onchange={handleSearch}></lightning-input>
+            <lightning-combobox label="Filter by Family" options={familyOptions} onchange={handleFilter}></lightning-combobox>
+            <lightning-combobox label="Filter by Type" options={typeOptions} onchange={handleFilter}></lightning-combobox>
+
+            <template if:true={products}>
+                <template for:each={products} for:item="product">
+                    <div key={product.Id} class="slds-box slds-m-around_small">
+                        <p>{product.Name}</p>
+                        <p>{product.Description}</p>
+                        <lightning-button label="Details" onclick={handleShowDetails}></lightning-button>
+                        <lightning-button label="Add to Cart" onclick={handleAddToCart}></lightning-button>
+                    </div>
+                </template>
+            </template>
+
+            <lightning-button label="View Cart" onclick={handleViewCart}></lightning-button>
+        </div>
+    </lightning-card>
+</template>
