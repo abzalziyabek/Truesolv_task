@@ -1,14 +1,13 @@
 import { LightningElement, wire, track } from 'lwc';
-import getProducts from '@salesforce/apex/ProductController.getProducts';
+import getProducts from '@salesforce/apex/OrderManagementController.getProducts';
 
-
-export default class OrderManagement extends LightningElement {
-    @track products;
+export default class OrderManagementPage extends LightningElement {
+    @track products = [];
     searchKey = '';
-    familyFilter = '';
-    typeFilter = '';
+    selectedType = '';
+    selectedFamily = '';
 
-    @wire(getProducts, { searchKey: '$searchKey', family: '$familyFilter', type: '$typeFilter' })
+    @wire(getProducts, { searchKey: '$searchKey', type: '$selectedType', family: '$selectedFamily' })
     wiredProducts({ error, data }) {
         if (data) {
             this.products = data;
@@ -21,19 +20,11 @@ export default class OrderManagement extends LightningElement {
         this.searchKey = event.target.value;
     }
 
-    handleFilter(event) {
-        const field = event.target.label.includes('Family') ? 'familyFilter' : 'typeFilter';
-        this[field] = event.target.value;
+    handleTypeChange(event) {
+        this.selectedType = event.detail.value;
     }
 
-    handleAddToCart(event) {
-        const productId = event.target.dataset.id;
-        console.log('Product added:', productId);
-        // Add to Cart logic here
-    }
-
-    handleViewCart() {
-        console.log('Viewing Cart');
-        // Show Cart logic here
+    handleFamilyChange(event) {
+        this.selectedFamily = event.detail.value;
     }
 }

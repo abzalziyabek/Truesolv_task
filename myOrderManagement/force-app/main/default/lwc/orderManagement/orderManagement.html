@@ -1,22 +1,23 @@
 <template>
     <lightning-card title="Order Management">
-        <div class="slds-m-around_medium">
-            <lightning-input type="search" label="Search Products" onchange={handleSearch}></lightning-input>
-            <lightning-combobox label="Filter by Family" options={familyOptions} onchange={handleFilter}></lightning-combobox>
-            <lightning-combobox label="Filter by Type" options={typeOptions} onchange={handleFilter}></lightning-combobox>
+        <div class="slds-grid">
+            <div class="slds-col slds-size_3-of-12">
+                <lightning-input type="search" label="Search Products" onchange={handleSearch}></lightning-input>
+                <lightning-combobox label="Type" options={typeOptions} onchange={handleTypeChange}></lightning-combobox>
+                <lightning-combobox label="Family" options={familyOptions} onchange={handleFamilyChange}></lightning-combobox>
+            </div>
 
-            <template if:true={products}>
+            <div class="slds-col slds-size_9-of-12">
                 <template for:each={products} for:item="product">
-                    <div key={product.Id} class="slds-box slds-m-around_small">
-                        <p>{product.Name}</p>
+                    <div key={product.Id} class="slds-box">
+                        <p><b>{product.Name}</b></p>
                         <p>{product.Description}</p>
-                        <lightning-button label="Details" onclick={handleShowDetails}></lightning-button>
-                        <lightning-button label="Add to Cart" onclick={handleAddToCart}></lightning-button>
+                        <p>${product.Price__c}</p>
+                        <lightning-button label="Details" onclick={handleDetails}></lightning-button>
+                        <lightning-button label="Add" onclick={handleAddToCart}></lightning-button>
                     </div>
                 </template>
-            </template>
-
-            <lightning-button label="View Cart" onclick={handleViewCart}></lightning-button>
+            </div>
         </div>
     </lightning-card>
 </template>
