@@ -1,0 +1,23 @@
+<template>
+    <lightning-card title="Order Management">
+        <div class="slds-grid">
+            <div class="slds-col slds-size_3-of-12">
+                <lightning-input type="search" label="Search Products" onchange={handleSearch}></lightning-input>
+                <lightning-combobox label="Type" options={typeOptions} onchange={handleTypeChange}></lightning-combobox>
+                <lightning-combobox label="Family" options={familyOptions} onchange={handleFamilyChange}></lightning-combobox>
+            </div>
+
+            <div class="slds-col slds-size_9-of-12">
+                <template for:each={products} for:item="product">
+                    <div key={product.Id} class="slds-box">
+                        <p><b>{product.Name}</b></p>
+                        <p>{product.Description}</p>
+                        <p>${product.Price__c}</p>
+                        <lightning-button label="Details" onclick={handleDetails}></lightning-button>
+                        <lightning-button label="Add" onclick={handleAddToCart}></lightning-button>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+</template>
