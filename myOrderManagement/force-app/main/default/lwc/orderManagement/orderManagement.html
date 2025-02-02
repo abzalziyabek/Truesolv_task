@@ -2,11 +2,11 @@
     <lightning-card title="Order Management">
         <div class="top-section">
             <div class="account-info">
-                <template if:true={hasAccount}>
+                <template if:true={account}>
                     <p><strong>Account Name:</strong> {account.Name}</p>
                     <p><strong>Account Number:</strong> {account.AccountNumber}</p>
                 </template>
-                <template if:false={hasAccount}>
+                <template if:false={account}>
                     <p>Loading account details...</p>
                 </template>
             </div>
@@ -34,7 +34,9 @@
                         </div>
                     </section>
                 </template>
-                <lightning-button label="Cart" variant="neutral" onclick={handleOpenCart}></lightning-button>
+                <lightning-button label="Cart" variant="neutral" onclick={openCartModal}></lightning-button>
+                <c-cart-modal is-open={isCartOpen} cart-items={cartItems} account-id={accountId}></c-cart-modal>
+
             </div>
         </div>
         <div class="slds-grid slds-gutters">

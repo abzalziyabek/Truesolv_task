@@ -2,7 +2,7 @@ public with sharing class ProductController {
 	@AuraEnabled(cacheable=true)
 	public static Product__c getProductDetails(Id productId) {
 		if (String.isEmpty(productId)) {
-			throw new AuraHandledException('❌ Invalid Product ID');
+			throw new AuraHandledException(' Invalid Product ID');
 		}
 
 		try {

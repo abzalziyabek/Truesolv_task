@@ -8,7 +8,8 @@ export default class OrderManagement extends LightningElement {
     @track filteredProducts = []; // Stores filtered products
     @track filters = { type: [], family: [], searchKey: '' };
     @track accountId;
-    account;
+    @api recordId; // Ensure this holds Account ID
+    @track account;
 
     @wire(getProducts)
     wiredProducts({ error, data }) {
@@ -70,53 +71,13 @@ export default class OrderManagement extends LightningElement {
     }
 
 
-    @track cart = []; // Store cart items
-    @track selectedProductId;
-
-    openProductModal(event) {
-        this.selectedProductId = event.target.dataset.id;
-        console.log('🛠 Details Button Clicked! Product ID:', this.selectedProductId);
-
-        setTimeout(() => {
-            const modal = this.template.querySelector("c-product-details-modal");
-            if (modal) {
-                modal.recordId = this.selectedProductId;
-                modal.openModal();
-                console.log('✅ Modal Opened!');
-            } else {
-                console.error('❌ Modal component not found!');
-            }
-        }, 100);
-    }
-
-    /**  Handle Adding to Cart */
-    handleAddToCart(event) {
-        const productId = event.target.dataset.id;
-        const product = this.filteredProducts.find(prod => prod.Id === productId);
-
-        if (product) {
-            this.cart.push(product);
-            console.log('🛒 Product Added to Cart:', product);
-
-            // Show Toast Message
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Success',
-                    message: `Added ${product.Name} to cart!`,
-                    variant: 'success',
-                    mode: 'dismissable'
-                })
-            );
-        }
-    }
-
     @wire(getAccountDetails, { accountId: '$accountId' })
     wiredAccount({ error, data }) {
         if (data) {
-            console.log('✅ Account Data Received:', JSON.stringify(data));
+            console.log(' Account Data Received:', JSON.stringify(data));
             this.account = data;
         } else if (error) {
-            console.error('❌ Error fetching account data:', error);
+            console.error(' Error fetching account data:', error);
         }
     }
 
@@ -129,55 +90,91 @@ export default class OrderManagement extends LightningElement {
             if (modal) {
                 modal.recordId = this.selectedProductId; // Pass Product ID
                 modal.openModal();
-                console.log('✅ Modal Opened!');
+                console.log(' Modal Opened!');
             } else {
-                console.error('❌ Modal component not found!');
+                console.error(' Modal component not found!');
             }
         }, 100); // Small delay to allow DOM update
     }
 
+    @track cart = [];
+    @track selectedProductId;
 
+    handleAddToCart(event) {
+        const productId = event.target.dataset.id;
+        const product = this.filteredProducts.find(p => p.Id === productId);
+        this.selectedProductId = product.Id;
 
+        if (product) {
+            const existingItem = this.cart.find(item => item.id === productId);
 
-    // openProductModal(event) {
-    //     this.selectedProductId = event.target.dataset.id;
-    //     console.log('🛠 Details Button Clicked! Product ID:', this.selectedProductId);
-    //
-    //     // Find the modal component
-    //     const modal = this.template.querySelector("c-product-details-modal");
-    //
-    //     if (modal) {
-    //         console.log("🔍 Checking for Modal Component:", modal);
-    //
-    //         // Fetch Product Details before opening modal
-    //         this.fetchProductDetails(this.selectedProductId)
-    //             .then(product => {
-    //                 console.log("✅ Product Data Fetched:", product);
-    //
-    //                 modal.product = product;  // Pass product data to modal
-    //                 modal.openModal();  // Open modal
-    //
-    //                 console.log('✅ Modal Opened!');
-    //             })
-    //             .catch(error => {
-    //                 console.error('❌ Error Fetching Product:', error);
-    //             });
-    //
-    //     } else {
-    //         console.error('❌ Modal component not found!');
-    //     }
-    // }
-    //
-    // fetchProductDetails(productId) {
-    //     return getProductDetails({ productId }) // Apex method call
-    //         .then(product => {
-    //             return product;
-    //         })
-    //         .catch(error => {
-    //             console.error('❌ Error Fetching Product:', error);
-    //             return null;
-    //         });
-    // }
+            if (existingItem) {
+                existingItem.quantity += 1;
+                existingItem.total = existingItem.quantity * existingItem.price;
+            } else {
+                this.cart.push({
+                    id: product.Id,
+                    name: product.Name,
+                    price: product.Price__c,
+                    quantity: 1,
+                    total: product.Price__c,
+                });
+            }
 
+            this.dispatchEvent(
+                new ShowToastEvent({
+                    title: 'Added to Cart',
+                    message: `${product.Name} added to cart.`,
+                    variant: 'success',
+                })
+            );
+        }
+    }
+
+    openCartModal() {
+        const cartModal = this.template.querySelector("c-cart-modal");
+        if (cartModal) {
+            cartModal.openCart(this.cart);
+        } else {
+            console.error("Cart modal component not found!");
+        }
+    }
+
+    handleCartCheckout() {
+        console.log("🛒 Cart checked out, clearing cart...");
+        this.cartItems = [];
+        this.isCartOpen = false;
+    }
+
+    connectedCallback() {
+        this.extractAccountIdFromUrl();
+    }
+
+    extractAccountIdFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        this.accountId = params.get('c__accountId');
+        console.log("🔍 Extracted Account ID:", this.accountId);
+
+        if (this.accountId) {
+            this.fetchAccountDetails();
+        } else {
+            console.error(" No Account ID found in URL");
+        }
+    }
+
+    fetchAccountDetails() {
+        getAccountDetails({ accountId: this.accountId })
+            .then((data) => {
+                if (data) {
+                    this.account = data;
+                    console.log(" Account Data Loaded:", JSON.stringify(this.account));
+                } else {
+                    console.error(" No data returned from Apex");
+                }
+            })
+            .catch((error) => {
+                console.error(" Error fetching account details:", error);
+            });
+    }
 
 }

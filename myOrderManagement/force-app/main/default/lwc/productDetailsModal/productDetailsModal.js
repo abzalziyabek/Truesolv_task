@@ -9,25 +9,25 @@ export default class ProductDetailsModal extends LightningElement {
     @wire(getProductDetails, { productId: '$recordId' })
     wiredProduct({ error, data }) {
         if (data) {
-            console.log("✅ Product Data Loaded:", data);
+            console.log(" Product Data Loaded:", data);
             this.product = data;
         } else if (error) {
-            console.error("❌ Error Fetching Product Details:", error);
+            console.error(" Error Fetching Product Details:", error);
         }
     }
 
     @api openModal() {
-        console.log("✅ Opening Modal with Record ID:", this.recordId);
+        console.log(" Opening Modal with Record ID:", this.recordId);
         if (!this.recordId) {
-            console.error("❌ No Product ID provided!");
+            console.error("No Product ID provided!");
             return;
         }
         this.isOpen = true;
-        console.log("✅ Modal State Updated:", this.isOpen);
+        console.log(" Modal State Updated:", this.isOpen);
     }
 
     closeModal() {
         this.isOpen = false;
-        console.log("❌ Modal Closed!");
+        console.log(" Modal Closed!");
     }
 }
