@@ -2,11 +2,38 @@
     <lightning-card title="Order Management">
         <div class="top-section">
             <div class="account-info">
-                <p><strong>Account Name:</strong> {accountName}</p>
-                <p><strong>Account Number:</strong> {accountNumber}</p>
+                <template if:true={hasAccount}>
+                    <p><strong>Account Name:</strong> {account.Name}</p>
+                    <p><strong>Account Number:</strong> {account.AccountNumber}</p>
+                </template>
+                <template if:false={hasAccount}>
+                    <p>Loading account details...</p>
+                </template>
             </div>
             <div class="action-buttons">
                 <lightning-button label="Create Product" variant="brand" class="slds-m-right_small" onclick={handleCreateProduct}></lightning-button>
+                <template if:true={isModalOpen}>
+                    <section role="dialog" tabindex="-1">
+                        <div class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header">
+                                    <h2>Create Product</h2>
+                                </header>
+                                <div class="slds-modal__content">
+                                    <lightning-input label="Product Name" name="name" onchange={handleInputChange}></lightning-input>
+                                    <lightning-input label="Description" name="description" onchange={handleInputChange}></lightning-input>
+                                    <lightning-input label="Type" name="type" onchange={handleInputChange}></lightning-input>
+                                    <lightning-input label="Family" name="family" onchange={handleInputChange}></lightning-input>
+                                    <lightning-input label="Price" name="price" type="number" onchange={handleInputChange}></lightning-input>
+                                </div>
+                                <footer class="slds-modal__footer">
+                                    <lightning-button label="Cancel" onclick={closeModal}></lightning-button>
+                                    <lightning-button label="Save" variant="brand" onclick={handleCreateProduct}></lightning-button>
+                                </footer>
+                            </div>
+                        </div>
+                    </section>
+                </template>
                 <lightning-button label="Cart" variant="neutral" onclick={handleOpenCart}></lightning-button>
             </div>
         </div>
@@ -22,7 +49,7 @@
                             <lightning-input type="checkbox" label="Type 1" data-type="Type 1" onchange={handleFilterChange}></lightning-input>
                         </li>
                         <li>
-                            <lightning-input type="checkbox" label="Type 2" data-type="Type 2" onchange={handleFilterChange}></lightning-input>
+                            <lightning-input type="checkbox" label="something" data-type="something" onchange={handleFilterChange}></lightning-input>
                         </li>
                         <li>
                             <lightning-input type="checkbox" label="Type 3" data-type="Type 3" onchange={handleFilterChange}></lightning-input>
@@ -35,7 +62,7 @@
                             <lightning-input type="checkbox" label="Family 1" data-family="Family 1" onchange={handleFilterChange}></lightning-input>
                         </li>
                         <li>
-                            <lightning-input type="checkbox" label="Family 2" data-family="Family 2" onchange={handleFilterChange}></lightning-input>
+                            <lightning-input type="checkbox" label="something" data-family="something" onchange={handleFilterChange}></lightning-input>
                         </li>
                         <li>
                             <lightning-input type="checkbox" label="Family 3" data-family="Family 3" onchange={handleFilterChange}></lightning-input>
@@ -55,15 +82,27 @@
                     <template for:each={filteredProducts} for:item="product">
                         <div key={product.Id} class="slds-box product-card">
                             <p class="product-name">{product.Name}</p>
-                            <p class="product-description">{product.Description}</p>
+                            <p class="product-description">{product.Description__c}</p>
                             <div class="product-buttons">
-                                <lightning-button label="Details" variant="neutral" onclick={handleViewDetails} data-id={product.Id}></lightning-button>
-                                <lightning-button label="Add" variant="brand" onclick={handleAddToCart} data-id={product.Id}></lightning-button>
+                                <lightning-button label="Details" variant="neutral"
+                                                  onclick={openProductModal}
+                                                  data-id={product.Id}>
+                                </lightning-button>
+                                <lightning-button
+                                        label="Add"
+                                        variant="brand"
+                                        onclick={handleAddToCart}
+                                        data-id={product.Id}>
+                                </lightning-button>
                             </div>
                         </div>
                     </template>
                 </div>
 
+                <!-- Product Details Modal (Only Render When A Product is Selected) -->
+                <template if:true={selectedProductId}>
+                    <c-product-details-modal record-id={selectedProductId}></c-product-details-modal>
+                </template>
             </div>
 
         </div>

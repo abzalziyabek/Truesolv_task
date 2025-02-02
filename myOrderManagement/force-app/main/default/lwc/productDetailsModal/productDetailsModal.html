@@ -1,0 +1,42 @@
+<template>
+    <template if:true={isOpen}>
+        <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <!-- Modal Header -->
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">Product Details</h2>
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" onclick={closeModal}>
+                        ✖
+                    </button>
+                </header>
+
+                <!-- Modal Body -->
+                <div class="slds-modal__content slds-p-around_medium">
+                    <template if:true={product}>
+                        <p><strong>Product ID:</strong> {product.Id}</p>
+                        <p><strong>Name:</strong> {product.Name}</p>
+                        <p><strong>Description:</strong> {product.Description__c}</p>
+                        <p><strong>Type:</strong> {product.Type__c}</p>
+                        <p><strong>Family:</strong> {product.Family__c}</p>
+                        <p><strong>Price:</strong> ${product.Price__c}</p>
+
+                        <template if:true={product.Image__c}>
+                            <div class="slds-m-top_medium">
+                                <img src={product.Image__c} alt="Product Image" class="product-image"/>
+                            </div>
+                        </template>
+                    </template>
+                    <template if:false={product}>
+                        <p>Loading product details...</p>
+                    </template>
+                </div>
+
+                <!-- Modal Footer -->
+                <footer class="slds-modal__footer">
+                    <button class="slds-button slds-button_neutral" onclick={closeModal}>Close</button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

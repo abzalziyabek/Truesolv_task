@@ -1,25 +1,40 @@
 trigger OrderTrigger on OrderItem__c (after insert, after update, after delete) {
 	Set<Id> orderIds = new Set<Id>();
-	for (OrderItem__c item : Trigger.new) {
-		orderIds.add(item.Order__c);
+
+	if (Trigger.isInsert || Trigger.isUpdate) {
+		for (OrderItem__c item : Trigger.new) {
+			orderIds.add(item.Order_Reference__c); // Ensure you're using the correct API name
+		}
 	}
 
-	List<Order__c> ordersToUpdate = [SELECT Id, TotalProductCount__c, TotalPrice__c FROM Order__c WHERE Id IN :orderIds];
+	if (Trigger.isDelete) {
+		for (OrderItem__c item : Trigger.old) {
+			orderIds.add(item.Order_Reference__c);
+		}
+	}
 
-	for (Order__c order : ordersToUpdate) {
-		List<OrderItem__c> items = [SELECT Quantity__c, Price__c FROM OrderItem__c WHERE Order__c = :order.Id];
+	List<Order__c> ordersToUpdate = new List<Order__c>();
 
-		Integer totalCount = 0;
-		Decimal totalPrice = 0.0; // Change from Integer to Decimal
+	try {
+		// Use the correct relationship name "OrderItems__r"
+		for (Order__c order : [SELECT Id, (SELECT Quantity__c, Price__c FROM OrderItems__r) FROM Order__c WHERE Id IN :orderIds]) {
+			Decimal totalPrice = 0;
+			Integer totalProducts = 0;
 
-		for (OrderItem__c item : items) {
-			totalCount += (Integer) item.Quantity__c;  // Explicit casting to Integer
-			totalPrice += item.Price__c;               // No change, already Decimal
+			for (OrderItem__c item : order.OrderItems__r) {
+				totalPrice += item.Price__c * item.Quantity__c;
+				totalProducts += Integer.valueOf(item.Quantity__c);
+			}
+
+			order.TotalPrice__c = totalPrice;
+			order.TotalProductCount__c = totalProducts;
+			ordersToUpdate.add(order);
 		}
 
-		order.TotalProductCount__c = totalCount;   // Integer field
-		order.TotalPrice__c = totalPrice;         // Decimal field
+		if (!ordersToUpdate.isEmpty()) {
+			update ordersToUpdate;
+		}
+	} catch (Exception e) {
+		System.debug('SOQL Error: ' + e.getMessage());
 	}
-
-	update ordersToUpdate;
 }
