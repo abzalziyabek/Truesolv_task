@@ -2,18 +2,17 @@ public with sharing class OrderManagementController {
 
 	@AuraEnabled(cacheable=true)
 	public static List<Product__c> getProducts() {
-		return [SELECT Id, Name, Description__c, Type__c, Family__c, Price__c, Image__c FROM Product__c];
+		return [SELECT Id, Name, Description__c, TypeVal__c, FamilyVal__c, Price__c, Image__c FROM Product__c];
 	}
 
 	@AuraEnabled
 	public static Id createProduct(String name, String description, String type, String family, Decimal price) {
-		String imageUrl = 'http://www.glyffix.com/api/Image?word=' + EncodingUtil.urlEncode(name, 'UTF-8');
 
 		Product__c newProduct = new Product__c(
 				Name = name,
 				Description__c = description,
-				Type__c = type,
-				Family__c = family,
+				TypeVal__c = type,
+				FamilyVal__c = family,
 				Price__c = price,
 				Image__c = imageUrl
 		);

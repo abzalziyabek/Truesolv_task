@@ -1,6 +1,7 @@
 import { LightningElement, wire, track,api } from 'lwc';
 import getProducts from '@salesforce/apex/OrderManagementController.getProducts';
 import getAccountDetails from '@salesforce/apex/OrderManagementController.getAccountDetails';
+import getCurrentUser from '@salesforce/apex/UserController.getCurrentUser';
 
 
 export default class OrderManagement extends LightningElement {
@@ -141,7 +142,7 @@ export default class OrderManagement extends LightningElement {
     }
 
     handleCartCheckout() {
-        console.log("🛒 Cart checked out, clearing cart...");
+        console.log("Cart checked out, clearing cart...");
         this.cartItems = [];
         this.isCartOpen = false;
     }
@@ -153,7 +154,7 @@ export default class OrderManagement extends LightningElement {
     extractAccountIdFromUrl() {
         const params = new URLSearchParams(window.location.search);
         this.accountId = params.get('c__accountId');
-        console.log("🔍 Extracted Account ID:", this.accountId);
+        console.log("Extracted Account ID:", this.accountId);
 
         if (this.accountId) {
             this.fetchAccountDetails();
@@ -175,6 +176,24 @@ export default class OrderManagement extends LightningElement {
             .catch((error) => {
                 console.error(" Error fetching account details:", error);
             });
+    }
+
+    @track isManager = false;
+
+    @wire(getCurrentUser)
+    wiredUser({ error, data }) {
+        if (data) {
+            this.isManager = data.IsManager__c;
+        } else if (error) {
+            console.error('Error fetching user data', error);
+        }
+    }
+
+    openCreateProductModal() {
+        const modal = this.template.querySelector('c-product-modal');
+        if (modal) {
+            modal.openModal();
+        }
     }
 
 }

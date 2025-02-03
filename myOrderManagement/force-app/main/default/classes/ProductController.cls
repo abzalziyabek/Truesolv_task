@@ -7,7 +7,7 @@ public with sharing class ProductController {
 
 		try {
 			return [
-					SELECT Id, Name, Description__c, Type__c, Family__c, Price__c, Image__c
+					SELECT Id, Name, Description__c, TypeVal__c, FamilyVal__c, Price__c, Image__c
 					FROM Product__c
 					WHERE Id = :productId
 					LIMIT 1
@@ -16,4 +16,24 @@ public with sharing class ProductController {
 			throw new AuraHandledException('Error fetching product details: ' + e.getMessage());
 		}
 	}
+
+	@AuraEnabled
+	public static void createProduct(Product__c productData) {
+		try {
+			Product__c newProduct = new Product__c(
+					Name = productData.Name,
+					Description__c = productData.Description__c,
+					TypeVal__c = productData.TypeVal__c,
+					FamilyVal__c = productData.FamilyVal__c,
+					Price__c = productData.Price__c
+			);
+
+			insert newProduct;
+
+		} catch (Exception e) {
+			throw new AuraHandledException('Error creating product: ' + e.getMessage());
+		}
+	}
+
+
 }

@@ -11,29 +11,14 @@
                 </template>
             </div>
             <div class="action-buttons">
-                <lightning-button label="Create Product" variant="brand" class="slds-m-right_small" onclick={handleCreateProduct}></lightning-button>
-                <template if:true={isModalOpen}>
-                    <section role="dialog" tabindex="-1">
-                        <div class="slds-modal slds-fade-in-open">
-                            <div class="slds-modal__container">
-                                <header class="slds-modal__header">
-                                    <h2>Create Product</h2>
-                                </header>
-                                <div class="slds-modal__content">
-                                    <lightning-input label="Product Name" name="name" onchange={handleInputChange}></lightning-input>
-                                    <lightning-input label="Description" name="description" onchange={handleInputChange}></lightning-input>
-                                    <lightning-input label="Type" name="type" onchange={handleInputChange}></lightning-input>
-                                    <lightning-input label="Family" name="family" onchange={handleInputChange}></lightning-input>
-                                    <lightning-input label="Price" name="price" type="number" onchange={handleInputChange}></lightning-input>
-                                </div>
-                                <footer class="slds-modal__footer">
-                                    <lightning-button label="Cancel" onclick={closeModal}></lightning-button>
-                                    <lightning-button label="Save" variant="brand" onclick={handleCreateProduct}></lightning-button>
-                                </footer>
-                            </div>
-                        </div>
-                    </section>
+                <template if:true={isManager}>
+                    <lightning-button
+                            label="Create Product"
+                            onclick={openCreateProductModal}
+                            variant="brand"
+                    ></lightning-button>
                 </template>
+                <c-product-modal></c-product-modal>
                 <lightning-button label="Cart" variant="neutral" onclick={openCartModal}></lightning-button>
                 <c-cart-modal is-open={isCartOpen} cart-items={cartItems} account-id={accountId}></c-cart-modal>
 

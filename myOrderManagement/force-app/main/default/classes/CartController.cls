@@ -1,6 +1,6 @@
 public with sharing class CartController {
 	@AuraEnabled
-	public static Order__c checkoutCart(Id accountId, List<OrderItemWrapper> cartItems) {
+	public static Order__c checkoutCart(Id accountId, List<Map<String, Object>> cartItems) {
 
 		System.debug('Checkout Started - Account ID: ' + accountId);
 		System.debug('Cart Items Received: ' + JSON.serialize(cartItems));
@@ -21,22 +21,27 @@ public with sharing class CartController {
 
 			List<OrderItem__c> orderItemsToInsert = new List<OrderItem__c>();
 
-			for (OrderItemWrapper item : cartItems) {
-				System.debug('Processing Order Item - ' + JSON.serialize(item));
+			for (Map<String, Object> item : cartItems) {
+				String productId = (String) item.get('productId');
+				Integer quantity = ((Decimal) item.get('quantity')).intValue();
+				Decimal price = (Decimal) item.get('price');
 
-				if (item.productId == null || item.productId == '') {
-					System.debug('ERROR: Missing Product ID!');
-					continue;
+				System.debug('Processing Cart Item - Product ID: ' + productId);
+
+				if (productId == null || productId == '') {
+					throw new AuraHandledException('Product ID is missing for an Order Item.');
 				}
 
-				orderItemsToInsert.add(new OrderItem__c(
+				OrderItem__c orderItem = new OrderItem__c(
 						Order_Reference__c = newOrder.Id,
-						Product_Reference__c = item.productId,
-						Quantity__c = item.quantity,
-						Price__c = item.price
-				));
+						Product_Reference__c = productId,
+						Quantity__c = quantity,
+						Price__c = price
+				);
 
+				orderItemsToInsert.add(orderItem);
 			}
+
 			if (!orderItemsToInsert.isEmpty()) {
 				insert orderItemsToInsert;  //
 				System.debug('Order Items Created: ' + orderItemsToInsert.size());
@@ -51,10 +56,5 @@ public with sharing class CartController {
 			throw new AuraHandledException('Checkout failed: ' + e.getMessage());
 		}
 	}
-
-	public class OrderItemWrapper {
-		@AuraEnabled public String productId;
-		@AuraEnabled public Integer quantity;
-		@AuraEnabled public Integer price;
-	}
 }
+

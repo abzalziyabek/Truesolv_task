@@ -1,0 +1,32 @@
+<template>
+<template if:true={isOpen}>
+    <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+
+            <header class="slds-modal__header">
+                <h2 class="slds-text-heading_medium">Create Product</h2>
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse"
+                        title="Close" onclick={closeModal}>
+                    <lightning-icon icon-name="utility:close" size="small"></lightning-icon>
+                </button>
+            </header>
+
+            <div class="slds-modal__content slds-p-around_medium">
+                <lightning-input label="Product Name" name="Name" value={product.Name} onchange={handleInputChange} required></lightning-input>
+                <lightning-input label="Price ($)" name="Price__c" type="number" value={product.Price__c} onchange={handleInputChange} required></lightning-input>
+                <lightning-input label="Description" name="Description__c" value={product.Description__c} onchange={handleInputChange} required></lightning-input>
+
+                <lightning-combobox label="Type" name="Type__c" value={product.Type__c} options={typeOptions} onchange={handleInputChange} required></lightning-combobox>
+                <lightning-combobox label="Family" name="Family__c" value={product.Family__c} options={familyOptions} onchange={handleInputChange} required></lightning-combobox>
+            </div>
+
+            <footer class="slds-modal__footer">
+                <lightning-button label="Cancel" variant="neutral" onclick={closeModal}></lightning-button>
+                <lightning-button label="Create Product" variant="brand" onclick={handleCreateProduct}></lightning-button>
+            </footer>
+        </div>
+    </section>
+
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</template>
+</template>

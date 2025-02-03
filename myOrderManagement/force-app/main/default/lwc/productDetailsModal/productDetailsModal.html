@@ -13,6 +13,13 @@
                 <!-- Modal Body -->
                 <div class="slds-modal__content slds-p-around_medium">
                     <template if:true={product}>
+                        <template if:true={product.Image__c}>
+                            <div class="slds-m-bottom_medium">
+                                <p class="slds-text-title_bold">Product Image:</p>
+                                <img src={product.Image__c} alt="Product Image" width="100px"
+                                     height="100px" class="slds-m-top_small slds-border_bottom">
+                            </div>
+                        </template>
                         <p><strong>Product ID:</strong> {product.Id}</p>
                         <p><strong>Name:</strong> {product.Name}</p>
                         <p><strong>Description:</strong> {product.Description__c}</p>
@@ -20,11 +27,6 @@
                         <p><strong>Family:</strong> {product.Family__c}</p>
                         <p><strong>Price:</strong> ${product.Price__c}</p>
 
-                        <template if:true={product.Image__c}>
-                            <div class="slds-m-top_medium">
-                                <img src={product.Image__c} alt="Product Image" class="product-image"/>
-                            </div>
-                        </template>
                     </template>
                     <template if:false={product}>
                         <p>Loading product details...</p>

@@ -40,21 +40,21 @@ export default class CartModal extends LightningElement {
             return;
         }
 
-        //  Ensure Product ID is correctly formatted
         let formattedCartItems = this.cartItems.map(item => ({
             productId: item.id,
             quantity: item.quantity,
             price: item.price
         }));
 
+
         console.log(" Formatted Cart Items to be sent:", JSON.stringify(formattedCartItems));
 
 
         checkoutCart({
-            cartItems: [...formattedCartItems],
+            cartItems: formattedCartItems,
             accountId: this.accountId
         }).then(result => {
-            console.log("✅ Order Created:", result);
+            console.log(" Order Created:", result);
             this.showToast('Success', 'Order placed successfully!', 'success');
 
             window.location.href = `/lightning/r/Order__c/${result.Id}/view`;
@@ -63,7 +63,7 @@ export default class CartModal extends LightningElement {
             this.isOpen = false;
             this.dispatchEvent(new CustomEvent("checkout"));
         }).catch(error => {
-            console.error("❌ Checkout Error:", error);
+            console.error(" Checkout Error:", error);
             this.showToast('Error', 'Failed to place order: ' + (error.body ? error.body.message : error), 'error');
         });
     }
