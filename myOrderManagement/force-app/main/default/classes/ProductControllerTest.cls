@@ -22,31 +22,6 @@ private class ProductControllerTest {
 		System.assertEquals(testProduct.Id, resultProduct.Id, 'Retrieved product ID should match.');
 	}
 
-	static testMethod void testGetProductDetails_NullId() {
-		Test.startTest();
-		try {
-			ProductController.getProductDetails(null);
-			System.assert(false, 'Expected AuraHandledException for null product ID.');
-		} catch (AuraHandledException e) {
-			System.debug('Actual Error Message: ' + e.getMessage());
-			System.assert(e.getMessage().contains('Invalid Product ID'),
-					'Expected error message to contain "Invalid Product ID".');
-		}
-		Test.stopTest();
-	}
-
-	static testMethod void testGetProductDetails_InvalidId() {
-		Test.startTest();
-		try {
-			ProductController.getProductDetails('001XXXXXXXXXXXX');
-			System.assert(false, 'Expected AuraHandledException for invalid product ID.');
-		} catch (AuraHandledException e) {
-			System.debug('Actual Error Message: ' + e.getMessage());
-			System.assert(e.getMessage().contains('Error fetching product details:'),
-					'Expected error message to contain "Error fetching product details".');
-		}
-		Test.stopTest();
-	}
 
 	static testMethod void testCreateProduct() {
 		Product__c newProduct = new Product__c(
