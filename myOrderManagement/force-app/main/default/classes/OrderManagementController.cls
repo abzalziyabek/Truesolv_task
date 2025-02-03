@@ -7,6 +7,7 @@ public with sharing class OrderManagementController {
 
 	@AuraEnabled
 	public static Id createProduct(String name, String description, String type, String family, Decimal price) {
+		String imageUrl = 'http://www.glyffix.com/api/Image?word=' + EncodingUtil.urlEncode(name, 'UTF-8');
 
 		Product__c newProduct = new Product__c(
 				Name = name,
