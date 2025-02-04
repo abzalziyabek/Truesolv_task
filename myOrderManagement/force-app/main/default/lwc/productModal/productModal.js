@@ -8,8 +8,8 @@ export default class ProductModal extends LightningElement {
         Name: '',
         Price__c: '',
         Description__c: '',
-        Type__c: '',
-        Family__c: ''
+        TypeVal__c: '',
+        FamilyVal__c: ''
     };
 
     // Options for Type combobox
@@ -46,10 +46,10 @@ export default class ProductModal extends LightningElement {
     }
 
     handleCreateProduct() {
-        const { Name, Price__c, Description__c, Type__c, Family__c } = this.product;
+        const { Name, Price__c, Description__c, TypeVal__c, FamilyVal__c } = this.product;
 
         // Validation to ensure all fields are filled
-        if (!Name || !Price__c || !Description__c || !Type__c || !Family__c) {
+        if (!Name || !Price__c || !Description__c || !TypeVal__c || !FamilyVal__c) {
             this.showToast('Error', 'Please fill in all fields.', 'error');
             return;
         }
@@ -71,8 +71,8 @@ export default class ProductModal extends LightningElement {
             Name: '',
             Price__c: '',
             Description__c: '',
-            Type__c: '',
-            Family__c: ''
+            TypeVal__c: '',
+            FamilyVal__c: ''
         };
     }
 

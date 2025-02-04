@@ -16,8 +16,8 @@
                 <lightning-input label="Price ($)" name="Price__c" type="number" value={product.Price__c} onchange={handleInputChange} required></lightning-input>
                 <lightning-input label="Description" name="Description__c" value={product.Description__c} onchange={handleInputChange} required></lightning-input>
 
-                <lightning-combobox label="Type" name="Type__c" value={product.Type__c} options={typeOptions} onchange={handleInputChange} required></lightning-combobox>
-                <lightning-combobox label="Family" name="Family__c" value={product.Family__c} options={familyOptions} onchange={handleInputChange} required></lightning-combobox>
+                <lightning-combobox label="Type" name="TypeVal__c" value={product.TypeVal__c} options={typeOptions} onchange={handleInputChange} required></lightning-combobox>
+                <lightning-combobox label="Family" name="FamilyVal__c" value={product.FamilyVal__c} options={familyOptions} onchange={handleInputChange} required></lightning-combobox>
             </div>
 
             <footer class="slds-modal__footer">

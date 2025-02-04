@@ -60,11 +60,11 @@ export default class OrderManagement extends LightningElement {
                     : true;
 
                 const matchesType = this.filters.type.length
-                    ? this.filters.type.includes(product.Type__c)
+                    ? this.filters.type.includes(product.TypeVal__c)
                     : true;
 
                 const matchesFamily = this.filters.family.length
-                    ? this.filters.family.includes(product.Family__c)
+                    ? this.filters.family.includes(product.FamilyVal__c)
                     : true;
 
                 return matchesSearch && matchesType && matchesFamily;
